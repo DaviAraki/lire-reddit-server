@@ -63,7 +63,7 @@
   resolved "https://registry.yarnpkg.com/@josephg/resolvable/-/resolvable-1.0.1.tgz#69bc4db754d79e1a2f17a650d3466e038d94a5eb"
   integrity sha512-CtzORUwWTTOTqfVtHaKRJ0I1kNQd1bpn3sUh8I3nJDVY+5/M/Oe1DnEWzPQvqq/xPIIkzzzIP7mfCoAjFRvDhg==
 
-"@mikro-orm/cli@^4.5.9":
+"@mikro-orm/cli@^4.0.0-alpha.0":
   version "4.5.9"
   resolved "https://registry.yarnpkg.com/@mikro-orm/cli/-/cli-4.5.9.tgz#3e2fdb5c972b0124cc28bba58dd1df32c24a4044"
   integrity sha512-UiT82KezvYw2J87t19NvIGgtwVZfCJJLoCCuiHcE0VejptnFDpigAYP4iGZULCDdW1kVr2SJYEbwOqcUQIZ+jw==
@@ -79,7 +79,7 @@
     yargonaut "1.1.4"
     yargs "15.4.1"
 
-"@mikro-orm/core@^4.5.9":
+"@mikro-orm/core@^4.0.0-alpha.0", "@mikro-orm/core@^4.5.9":
   version "4.5.9"
   resolved "https://registry.yarnpkg.com/@mikro-orm/core/-/core-4.5.9.tgz#1b8fa2915544fc3f00f0b9db100868aeceb5b8f5"
   integrity sha512-kG7nnchwhtDNjsAJ7Lau9ZsyNQo2rBqZg+6T54A/c6v4/yFRltbg3gv6eMd4vefH6PS2AKa71H5L49P105qYmQ==
@@ -110,7 +110,7 @@
     knex "0.21.19"
     sqlstring "2.3.2"
 
-"@mikro-orm/migrations@^4.5.9":
+"@mikro-orm/migrations@^4.0.0-alpha.0", "@mikro-orm/migrations@^4.5.9":
   version "4.5.9"
   resolved "https://registry.yarnpkg.com/@mikro-orm/migrations/-/migrations-4.5.9.tgz#d1ab5590263bdeee65d7e4cbac706739d81388c5"
   integrity sha512-lOCPkhc4V+HzVtTfKUVqX5msdfxvmY9wvPTMbhdIJ0Wp4C78T/YrXy9FD9EUzrY4Sfu6QKgTG7A509GjPjhgoQ==
@@ -121,7 +121,7 @@
     knex "0.21.19"
     umzug "2.3.0"
 
-"@mikro-orm/postgresql@^4.5.9":
+"@mikro-orm/postgresql@^4.0.0-alpha.0":
   version "4.5.9"
   resolved "https://registry.yarnpkg.com/@mikro-orm/postgresql/-/postgresql-4.5.9.tgz#3d654a0e6159775b88949655a6f209434e6b10b5"
   integrity sha512-hIXJlPTmf1NUqK8kqeo33qdaXeVlQQOQI03wm8Mfv+mQ0efNZ6VtQnx27tSi5rIJHhVXEzq4ap0CUMxgj/5EQA==
@@ -3041,7 +3041,7 @@ rechoir@^0.6.2:
   dependencies:
     resolve "^1.1.6"
 
-reflect-metadata@0.1.13:
+reflect-metadata@0.1.13, reflect-metadata@^0.1.13:
   version "0.1.13"
   resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.13.tgz#67ae3ca57c972a2aa1642b10fe363fe32d49dc08"
   integrity sha512-Ts1Y/anZELhSsjMcU605fU9RE4Oi3p5ORujwbIKXfWa+0Zxs510Qrmrce5/Jowq3cHSZSJqBjypxmHarc+vEWg==
