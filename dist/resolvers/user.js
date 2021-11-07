@@ -25,22 +25,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserResolver = void 0;
-const User_1 = require("../entities/User");
 const type_graphql_1 = require("type-graphql");
+const User_1 = require("../entities/User");
 const argon2_1 = __importDefault(require("argon2"));
-let UserNamePasswordInput = class UserNamePasswordInput {
+let UsernamePasswordInput = class UsernamePasswordInput {
 };
 __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
-], UserNamePasswordInput.prototype, "username", void 0);
+], UsernamePasswordInput.prototype, "username", void 0);
 __decorate([
     type_graphql_1.Field(),
     __metadata("design:type", String)
-], UserNamePasswordInput.prototype, "password", void 0);
-UserNamePasswordInput = __decorate([
+], UsernamePasswordInput.prototype, "password", void 0);
+UsernamePasswordInput = __decorate([
     type_graphql_1.InputType()
-], UserNamePasswordInput);
+], UsernamePasswordInput);
 let FieldError = class FieldError {
 };
 __decorate([
@@ -77,48 +77,56 @@ let UserResolver = class UserResolver {
             return user;
         });
     }
-    register(options, { em }) {
+    register(options, { em, req }) {
         return __awaiter(this, void 0, void 0, function* () {
             if (options.username.length <= 2) {
                 return {
                     errors: [
                         {
                             field: 'username',
-                            message: 'Username must be at least 3 characters',
+                            message: 'length must be greater than 2',
                         },
                     ],
                 };
             }
-            if (options.password.length <= 3) {
+            if (options.password.length <= 2) {
                 return {
                     errors: [
                         {
                             field: 'password',
-                            message: 'Password must be at least 4 characters',
+                            message: 'length must be greater than 2',
                         },
                     ],
                 };
             }
             const hashedPassword = yield argon2_1.default.hash(options.password);
-            const user = em.create(User_1.User, {
-                username: options.username,
-                password: hashedPassword,
-            });
+            let user;
             try {
-                yield em.persistAndFlush(user);
+                const result = yield em
+                    .createQueryBuilder(User_1.User)
+                    .getKnexQuery()
+                    .insert({
+                    username: options.username,
+                    password: hashedPassword,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                })
+                    .returning('*');
+                user = result[0];
             }
             catch (err) {
-                if (err.code === '23505' || err.detail.includes('already exists')) {
+                if (err.code === '23505') {
                     return {
                         errors: [
                             {
                                 field: 'username',
-                                message: 'username already exists',
+                                message: 'username already taken',
                             },
                         ],
                     };
                 }
             }
+            req.session.userId = user.id;
             return { user };
         });
     }
@@ -130,7 +138,7 @@ let UserResolver = class UserResolver {
                     errors: [
                         {
                             field: 'username',
-                            message: 'that username do not exist',
+                            message: "that username doesn't exist",
                         },
                     ],
                 };
@@ -141,13 +149,15 @@ let UserResolver = class UserResolver {
                     errors: [
                         {
                             field: 'password',
-                            message: 'password and username does not match',
+                            message: 'incorrect password',
                         },
                     ],
                 };
             }
             req.session.userId = user.id;
-            return { user };
+            return {
+                user,
+            };
         });
     }
 };
@@ -163,7 +173,7 @@ __decorate([
     __param(0, type_graphql_1.Arg('options')),
     __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [UserNamePasswordInput, Object]),
+    __metadata("design:paramtypes", [UsernamePasswordInput, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "register", null);
 __decorate([
@@ -171,7 +181,7 @@ __decorate([
     __param(0, type_graphql_1.Arg('options')),
     __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [UserNamePasswordInput, Object]),
+    __metadata("design:paramtypes", [UsernamePasswordInput, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "login", null);
 UserResolver = __decorate([

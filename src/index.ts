@@ -11,7 +11,7 @@ import { UserResolver } from './resolvers/user';
 import redis from 'redis';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
-import { MyContext } from './types';
+import cors from 'cors';
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
@@ -19,25 +19,29 @@ const main = async () => {
 
   const app = express();
 
-  let RedisStore = connectRedis(session);
-  let redisClient = redis.createClient();
-
+  const RedisStore = connectRedis(session);
+  const redisClient = redis.createClient();
+  app.use(
+    cors({
+      origin: 'http://localhost:3000',
+      credentials: true,
+    })
+  );
   app.use(
     session({
       name: 'qid',
       store: new RedisStore({
         client: redisClient,
         disableTouch: true,
-        disableTTL: true,
       }),
       cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 365,
+        maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
         httpOnly: true,
-        sameSite: 'lax',
-        secure: __prod__,
+        sameSite: true, // csrf
+        secure: __prod__, // cookie only works in https
       },
       saveUninitialized: false,
-      secret: 'keyboard cat',
+      secret: 'qowiueojwojfalksdjoqiwueo',
       resave: false,
     })
   );
@@ -47,14 +51,19 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }): MyContext => ({ em: orm.em, req, res }),
+    context: ({ req, res }) => ({ em: orm.em, req, res }),
   });
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({
+    app,
+    cors: false,
+  });
 
   app.listen(4000, () => {
     console.log('server started on localhost:4000');
   });
 };
 
-main();
+main().catch((err) => {
+  console.error(err);
+});
